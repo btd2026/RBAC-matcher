@@ -1,5 +1,4 @@
 import os
-import agents.mcp
 import dotenv
 from dataclasses import dataclass
 from typing import Literal
@@ -7,6 +6,7 @@ import os
 import asyncio
 import time
 
+import agents.mcp
 import agents
 from openai import BaseModel
 from openai import AsyncAzureOpenAI
@@ -56,8 +56,7 @@ async def run(mcp_servers:list):
                 quit()
             result = await Runner.run(agent, prompt)
             print(result.final_output)
-    except KeyboardInterrupt:
-        quit()
+
     except OpenAIError as e:
         print(f"OpenAI API Error: {str(e)}")
     except Exception as e:
