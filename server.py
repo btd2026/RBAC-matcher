@@ -14,36 +14,41 @@ mcp = FastMCP("Multi-MCP", port=3000)
 
 @mcp.tool("csv_to_org_chart")
 def csv_to_graph_tool(filepath: str) -> str:
+    import os
     import pandas as pd
     import networkx as nx
     from pyvis.network import Network
-    import os
 
     # Load the data
-    if filepath.endswith('.csv'):
+    if filepath.endswith(".csv"):
         df = pd.read_csv(filepath)
     else:
-        df = pd.read_excell(filepath)
+        df = pd.read_excel(filepath)
 
-    required_columns = ["UserID", "First Name", "Last Name", "Manager Name", "Manager UserID"]
-    missing_cols = set(required_columns) - set(df.columns)
-    if missing_cols:
-        raise ValueError(f"Missing columns infile: {missing_cols}")
-    
+    # Normalize column names to simplify lookups
+    normalized = {c.lower(): c for c in df.columns}
+    required = {"employee_id", "reports_to_manager_id"}
+    missing = required - set(normalized)
+    if missing:
+        raise ValueError(f"Missing columns in file: {missing}")
+
+    id_col = normalized["employee_id"]
+    manager_col = normalized["reports_to_manager_id"]
+
     G = nx.DiGraph()
 
-    # Add nodes
     for _, row in df.iterrows():
-        user_id = row["UserID"]
-        manager_id = row["Manager UserID"]
-        G.add_node(user_id,
-                   first_name=row["First Name"],
-                   last_name=row["Last Name"],
-                   manager_name=row["Manager Name"],
-                   manager_user_id=manager_id)
-        # Add edges if manager_id exists and is not blank
-        if pd.notna(manager_id) and manager_id != "" and manager_id != user_id:
-            G.add_edge(manager_id, user_id, relation="reports_to")
+        node_id = row[id_col]
+        manager_id = row[manager_col]
+
+        # Use all headers as node attributes
+        attributes = row.to_dict()
+        # Explicit manager reference for convenience
+        attributes["reports_to_manager_id"] = manager_id
+        G.add_node(node_id, **attributes)
+
+        if pd.notna(manager_id) and manager_id != "" and manager_id != node_id:
+            G.add_edge(manager_id, node_id, relation="reports_to")
 
     # Detect cycles
     try:
@@ -54,23 +59,24 @@ def csv_to_graph_tool(filepath: str) -> str:
         cycles = []
 
     # Detect broken references
-    all_ids = set(df["UserID"])
-    broken_managers = set(df["Manager UserID"]) - all_ids - {None, ""}
+    all_ids = set(df[id_col])
+    broken_managers = set(df[manager_col]) - all_ids - {None, ""}
     if broken_managers:
         print(f"Warning: Manager IDs not found in data: {broken_managers}")
 
     # Create interactive visualization
     net = Network(directed=True, notebook=False)
     for node, data in G.nodes(data=True):
-        net.add_node(node,
-                     label=f'{data["first_name"]} {data["last_name"]}',
-                     title=f"UserID: {node}\nManager: {data['manager_name']} ({data['manager_user_id']})")
-    
+        first = data.get("first_name") or data.get("First Name") or ""
+        last = data.get("last_name") or data.get("Last Name") or ""
+        label = f"{first} {last}".strip() or str(node)
+        title = "\n".join(f"{k}: {v}" for k, v in data.items())
+        net.add_node(node, label=label, title=title)
+
     for source, target, data in G.edges(data=True):
         net.add_edge(source, target, label=data["relation"])
 
-    # Save HTML
-    output_html = os.path.splitext(filepath)[0] + "org_chart.html"
+    output_html = os.path.splitext(filepath)[0] + "_org_chart.html"
     net.show(output_html)
     return output_html
 
@@ -87,3 +93,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         logger.info("Quitting...")
         quit()
+
