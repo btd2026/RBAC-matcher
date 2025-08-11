@@ -18,5 +18,14 @@ Then, push it to your registry, e.g. `docker push myregistry.com/myapp`.
 Consult Docker's [getting started](https://docs.docker.com/go/get-started-sharing/)
 docs for more detail on building and pushing.
 
+### Run this after editing your tools (Outside of venv)
+docker stop mcp-container
+
+docker rm mcp-container
+
+docker build -t rbac-matcher-app:latest .
+
+docker run -d -p 3000:3000 --name mcp-container rbac-matcher-app
+
 ### References
 * [Docker's Python guide](https://docs.docker.com/language/python/)

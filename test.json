@@ -1,0 +1,45 @@
+{
+    "id": "6f394a74-b648-4a81-ac23-d5dda7069416",
+    "credentials": [
+        {
+            "name": "DOMAIN_ADMIN",
+            "type": "ACCOUNT",
+            "properties": {
+                "account_id": "58_5"
+            }
+        }
+    ],
+    "type": "WIN_NIX_DOMAIN",
+    "properties": {
+        "adGroups": {
+            "groups": true
+        },
+        "targets": {
+            "nonPrivileged": false,
+            "domainController": true
+        },
+        "ou": "OU=Servers,DC=UPHS,DC=PENNHEALTH,DC=PRV",
+        "domain": "uphs.pennhealth.prv"
+    },
+    "creationTime": "2025-07-22T04:09:15Z",
+    "updateTime": "2025-07-22T08:25:24Z",
+    "status": "COMPLETED",
+    "result": {
+        "scanID": "6f394a74-b648-4a81-ac23-d5dda7069416",
+        "scanResult": "SuccessWithErrors",
+        "scanStartTime": "2025-07-22 00:09:40,192",
+        "totalScanDuration": "03:43:37",
+        "engineVersion": "1.0.0.519",
+        "errorMessage": "Additional Errors' details in '6f394a74-b648-4a81-ac23-d5dda7069416_Errors.log'",
+        "totalScannedTargets": 6820,
+        "totalNotScannedTargets": 0,
+        "totalScannedTargetsWithErrors": 4536,
+        "totalDiscoveredAccounts": 16342,
+        "ADGroupsFoundAccounts": 0,
+        "ADGroupsFoundMachines": 0
+    },
+    "reason": "SuccessWithErrors",
+    "tags": [],
+    "connectorId": null,
+    "connectorPoolId": null
+}

@@ -10,7 +10,7 @@ import agents
 from openai import BaseModel
 import openai
 from openai import OpenAIError
-from agents import Agent, Runner, OpenAIChatCompletionsModel, set_tracing_disabled
+from agents import Agent, Runner, OpenAIChatCompletionsModel, set_tracing_disabled, AsyncOpenAI
 from agents.run_context import RunContextWrapper
 
 dotenv.load_dotenv()
@@ -30,7 +30,7 @@ async def run(mcp_servers: list):
     try:
         # Create the OpenAI client
         # The agents OpenAIChatCompletionsModel expects a client, so we pass openai itself
-        client = openai
+        client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
         # Configure the agent with OpenAI
         agent = Agent(
