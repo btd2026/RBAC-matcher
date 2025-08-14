@@ -3,7 +3,7 @@
 When you're ready, start your application by running:
 `docker compose up --build`.
 
-Your application will be available at http://localhost:8000.
+Your application will be available at http://localhost:3000.
 
 ### Deploying your application to the cloud
 
@@ -20,12 +20,22 @@ docs for more detail on building and pushing.
 
 ### Run this after editing your tools (Outside of venv)
 docker stop mcp-container
-
 docker rm mcp-container
-
 docker build -t rbac-matcher-app:latest .
+docker run -d -p 3000:3000 --name mcp-container rbac-matcher-
 
-docker run -d -p 3000:3000 --name mcp-container rbac-matcher-app
+# Build and start
+docker compose build server
+docker compose up -d server
+
+# Tail logs
+docker compose logs -f server
+
+# Verify /data and output mount contents
+docker compose exec server bash -lc 'ls -la /data && echo && ls -la /app/output'
+
+# Tear down
+docker compose down
 
 ### References
 * [Docker's Python guide](https://docs.docker.com/language/python/)

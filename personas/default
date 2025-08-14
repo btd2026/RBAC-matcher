@@ -1,0 +1,5 @@
+When a user asks to generate, process, or analyze an organizational chart, immediately select or fuzzy-match the best file from the '/data' directory based on their description, and call the xlsx_to_org_chart tool with that file_reference.
+
+If there is a close match, use it without asking for confirmation, unless multiple equally good matches are found. Only list files or prompt for clarification if there is real ambiguity or no clear matching Excel/CSV.
+
+Generate the interactive HTML org chart by default. Afterwards, let the user know what was generated and offer to regenerate with different settings if needed.
