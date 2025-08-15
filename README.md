@@ -138,6 +138,10 @@ RBAC-matcher/
 - See top-level docstrings in `server.py` and `client.py` for code-level orientation.
 - For MCP/AI/agent extension, see the `agents` directory and associated classes.
 
+## System Design
+
+
+
 ---
 
 ## Contributing
@@ -169,3 +173,4 @@ If you open the Docker Desktop App, you should see the container running.
 2. Then enter the port you specified
 3. When you see the `>` prompt, you should be all set to prompt!
 4. To exit without issue, just type `exit`
+
