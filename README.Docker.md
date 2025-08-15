@@ -1,41 +1,99 @@
-### Building and running your application
+# RBAC-matcher Docker Runbook
 
-When you're ready, start your application by running:
-`docker compose up --build`.
+## Building and Running RBAC-matcher
 
-Your application will be available at http://localhost:3000.
+When you're ready to run the RBAC-matcher server in Docker, use the following:
 
-### Deploying your application to the cloud
+```bash
+docker compose up --build
+```
 
-First, build your image, e.g.: `docker build -t myapp .`.
-If your cloud uses a different CPU architecture than your development
-machine (e.g., you are on a Mac M1 and your cloud provider is amd64),
-you'll want to build the image for that platform, e.g.:
-`docker build --platform=linux/amd64 -t myapp .`.
+- This command will build the image if necessary and launch the server.
+- By default, your application will be available at [http://localhost:3000](http://localhost:3000).
 
-Then, push it to your registry, e.g. `docker push myregistry.com/myapp`.
+---
 
-Consult Docker's [getting started](https://docs.docker.com/go/get-started-sharing/)
-docs for more detail on building and pushing.
+## Data & Output Directories
 
-### Run this after editing your tools (Outside of venv)
+- Excel and CSV files for org charts must be placed in the `./data` directory (mounted into the container as `/data`).
+- Generated org chart HTML files will be available in the `./output` directory (mounted as `/app/output`).
+- Persona files are mounted for agent configuration via:
+  - `./personas` → `/app/utils/personas`
+  - `./utils`     → `/app/utils`
+
+---
+
+## Useful Docker Commands
+
+### Rebuilding and Restarting the Application
+
+If you update your tools or code, rebuild the image and restart the container:
+
+```bash
 docker stop mcp-container
 docker rm mcp-container
 docker build -t rbac-matcher-app:latest .
-docker run -d -p 3000:3000 --name mcp-container rbac-matcher-
+docker run -d -p 3000:3000 --name mcp-container rbac-matcher-app:latest
+```
 
-# Build and start
+Or, using Docker Compose (preferred):
+
+```bash
 docker compose build server
 docker compose up -d server
+```
 
-# Tail logs
-docker compose logs -f server
+---
 
-# Verify /data and output mount contents
-docker compose exec server bash -lc 'ls -la /data && echo && ls -la /app/output'
+### Monitoring & Maintenance
 
-# Tear down
-docker compose down
+- **Tail logs:**  
+  ```bash
+  docker compose logs -f server
+  ```
 
-### References
-* [Docker's Python guide](https://docs.docker.com/language/python/)
+- **Verify your data and output mounts:**  
+  ```bash
+  docker compose exec server bash -lc 'ls -la /data && echo && ls -la /app/output'
+  ```
+
+- **Tear down all containers and volumes:**  
+  ```bash
+  docker compose down
+  ```
+
+---
+
+## Cloud Deployment
+
+To deploy on a cloud VM or server:
+
+1. **Build your Docker image for the appropriate platform** (e.g., if deploying to amd64 from an M1 Mac):
+    ```bash
+    docker build --platform=linux/amd64 -t rbac-matcher-app:latest .
+    ```
+
+2. **Push your image to a container registry** (if needed):
+    ```bash
+    docker tag rbac-matcher-app:latest myregistry.com/rbac-matcher-app
+    docker push myregistry.com/rbac-matcher-app
+    ```
+
+3. **Run your image on your server using the appropriate run or compose command.**
+
+---
+
+## Troubleshooting
+
+- If files do not appear, confirm they are placed in `./data` (host) and are visible with the mount verification command above.
+- HTML outputs will not auto-open in your desktop browser when running in Docker. Instead, open the generated HTML from `./output` on your host machine.
+- For agent/persona changes, ensure you remount or rebuild containers as needed.
+
+---
+
+## References
+
+- [Docker Compose Reference](https://docs.docker.com/compose/compose-file/)
+- [Docker's Python Guide](https://docs.docker.com/language/python/)
+
+---
