@@ -140,7 +140,7 @@ RBAC-matcher/
 
 ## System Design
 
-
+![System Design](System-Data-Flow.png)
 
 ---
 
@@ -173,4 +173,5 @@ If you open the Docker Desktop App, you should see the container running.
 2. Then enter the port you specified
 3. When you see the `>` prompt, you should be all set to prompt!
 4. To exit without issue, just type `exit`
+
 
