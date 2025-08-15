@@ -94,7 +94,7 @@ def build_graph_from_df(df, associate_id_col, manager_id_col):
         G.add_node(node_id, **attributes)  # Add associate as a graph node
         # If manager data is present and reasonable, add edge
         if pd.notna(manager_id) and manager_id != "" and manager_id != node_id:
-            G.add_edge(manager_id, node_id, relation="reports_to")
+            G.add_edge(node_id, manager_id, relation="reports_to")
     return G
 
 def save_network_html(G, filepath, suffix="_org_chart", options=None):
@@ -110,7 +110,7 @@ def save_network_html(G, filepath, suffix="_org_chart", options=None):
             "layout": {
                 "hierarchical": {
                     "enabled": True,
-                    "direction": "UD",
+                    "direction": "DU",
                     "sortMethod": "directed",
                     "levelSeparation": 250,
                     "nodeSpacing": 300
