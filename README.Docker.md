@@ -1,6 +1,7 @@
 # RBAC-matcher Docker Runbook
 
 ## Building and Running RBAC-matcher
+Open Docker Desktop Engine on your computer
 
 When you're ready to run the RBAC-matcher server in Docker, use the following:
 
@@ -20,6 +21,8 @@ docker compose up --build
 - Persona files are mounted for agent configuration via:
   - `./personas` → `/app/utils/personas`
   - `./utils`     → `/app/utils`
+  
+- This is set up in compose.yaml
 
 ---
 
